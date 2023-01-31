@@ -1,0 +1,31 @@
+#!/bin/bash
+
+# Prompt the user for the starting IP address
+echo "Enter the starting IP address (1-255):"
+read start
+
+# Prompt the user for the ending IP address
+echo "Enter the ending IP address (10 in this case):"
+read end
+
+# Define the name of the output file
+filename="nmap_output.txt"
+
+# Loop through the range of IP addresses
+for host in $(seq $start $end)
+do
+  # Construct the current IP address
+  ip="10.140.1.$host"
+
+  # Run an nmap scan on the current IP
+  nmap $ip -p 22-443 >> $filename
+
+  # Write a header for the current IP to the output file
+  echo "Results for host: $ip" >> $filename
+
+  # Grep the open ports from the nmap output and write them to the output file
+  nmap $ip -p 22-443 | grep open >> $filename
+
+  # Add a newline to the output file for readability
+  echo "" >> $filename
+done
